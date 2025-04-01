@@ -1,10 +1,12 @@
-import React, { useContext } from 'react';
-import  {CertificateContext}  from '../../contexts/CertificateContext';
+import React, { useState, useContext } from 'react'; // Added useContext import here
+import { CertificateContext } from '../../contexts/CertificateContext';
 import { FaFileAlt, FaDownload, FaUndo, FaRedo, FaSave, FaShareAlt } from 'react-icons/fa';
+import PreviewModal from '../Certificate/PreviewModal';
 import './Toolbar.css';
 
 const Toolbar = () => {
   const { certificate, updateCertificate } = useContext(CertificateContext);
+  const [showPreview, setShowPreview] = useState(false);
 
   const handleNewCertificate = () => {
     if (window.confirm('Are you sure you want to create a new certificate? All current changes will be lost.')) {
@@ -22,9 +24,10 @@ const Toolbar = () => {
   };
 
   const handleSave = () => {
-    // In a real app, this would save to a database or local storage
+    // First save to local storage
     localStorage.setItem('certificateData', JSON.stringify(certificate));
-    alert('Certificate saved successfully!');
+    // Then show preview
+    setShowPreview(true);
   };
 
   const handleLoad = () => {
@@ -38,56 +41,35 @@ const Toolbar = () => {
     }
   };
 
-  const handleShare = () => {
-    // This would be more sophisticated in a real app
-    alert('Share functionality would be implemented here');
-  };
-
   return (
-    <div className="toolbar">
-      <div className="toolbar-left">
-        <h1 className="app-title">Certificate Builder</h1>
+    <>
+      <div className="toolbar">
+        <div className="toolbar-left">
+          <h1 className="app-title">Certificate Builder</h1>
+        </div>
+        
+        <div className="toolbar-center">
+          <button className="toolbar-button" onClick={handleNewCertificate}>
+            <FaFileAlt className="toolbar-icon" />
+            <span>New</span>
+          </button>
+          
+          <button className="toolbar-button" onClick={handleSave}>
+            <FaSave className="toolbar-icon" />
+            <span>Preview & Save </span>
+          </button>
+          
+          <button className="toolbar-button" onClick={handleLoad}>
+            <FaFileAlt className="toolbar-icon" />
+            <span>Load</span>
+          </button>
+        </div>
       </div>
-      
-      <div className="toolbar-center">
-        <button className="toolbar-button" onClick={handleNewCertificate}>
-          <FaFileAlt className="toolbar-icon" />
-          <span>New</span>
-        </button>
-        
-        <button className="toolbar-button" onClick={handleSave}>
-          <FaSave className="toolbar-icon" />
-          <span>Save</span>
-        </button>
-        
-        <button className="toolbar-button" onClick={handleLoad}>
-          <FaFileAlt className="toolbar-icon" />
-          <span>Load</span>
-        </button>
-        
-        <button className="toolbar-button" disabled>
-          <FaUndo className="toolbar-icon" />
-          <span>Undo</span>
-        </button>
-        
-        <button className="toolbar-button" disabled>
-          <FaRedo className="toolbar-icon" />
-          <span>Redo</span>
-        </button>
-      </div>
-      
-      <div className="toolbar-right">
-        <button className="toolbar-button primary" onClick={handleShare}>
-          <FaShareAlt className="toolbar-icon" />
-          <span>Share</span>
-        </button>
-        
-        <button className="toolbar-button primary">
-          <FaDownload className="toolbar-icon" />
-          <span>Export</span>
-        </button>
-      </div>
-    </div>
+
+      {showPreview && (
+        <PreviewModal onClose={() => setShowPreview(false)} />
+      )}
+    </>
   );
 };
 

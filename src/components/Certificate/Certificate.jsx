@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from 'react';
+// Certificate.js
+import React, { useContext } from 'react';
 import { CertificateContext } from '../../contexts/CertificateContext';
 import DraggableElement from '../UI/DraggableElement';
 import BarcodeGenerator from './BarcodeGenerator';
@@ -21,17 +22,8 @@ const Certificate = () => {
     logos, 
     barcodeData,
     template = 'classic', 
-    templateImage,
-    backgroundColor,
-    borderColor,
-    borderWidth,
-    borderStyle
+    templateImage
   } = certificate;
-
-  // Debug signatures
-  useEffect(() => {
-    console.log('Current signatures:', signatures);
-  }, [signatures]);
 
   // Map template IDs to their image files
   const templateImages = {
@@ -46,12 +38,9 @@ const Certificate = () => {
 
   const certificateStyle = {
     backgroundImage: `url(${backgroundImage})`,
-    backgroundColor: backgroundColor || 'transparent',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    border: `${borderWidth || '15px'} ${borderStyle || 'solid'} ${borderColor || '#f1c40f'}`,
-    boxSizing: 'border-box'
+    backgroundRepeat: 'no-repeat'
   };
 
   return (
@@ -66,40 +55,15 @@ const Certificate = () => {
           <p className="certificate-text">on this {date}</p>
           
           <div className="signatures-container">
-            {signatures.map((sig, index) => {
-              // Ensure default position is within visible area
-              const defaultPos = sig.position || { 
-                x: 50 + (index * 200), 
-                y: 400 
-              };
-              
-              return (
-                <DraggableElement 
-                  key={`sig-${index}`} 
-                  id={`signature-${index}`} 
-                  defaultPosition={defaultPos}
-                  bounds="parent"
-                >
-                  <div className="signature-box">
-                    {sig.image ? (
-                      <img 
-                        src={sig.image} 
-                        alt="Signature" 
-                        className="signature-image"
-                        onError={(e) => {
-                          e.target.src = '';
-                          e.target.style.display = 'none';
-                        }}
-                      />
-                    ) : (
-                      <div className="signature-placeholder">No Signature</div>
-                    )}
-                    <p className="signature-name">{sig.name || "[Name]"}</p>
-                    <p className="signature-date">{sig.date || "[Date]"}</p>
-                  </div>
-                </DraggableElement>
-              );
-            })}
+            {signatures.map((sig, index) => (
+              <DraggableElement key={index} id={`signature-${index}`} defaultPosition={sig.position}>
+                <div className="signature-box">
+                  <img src={sig.image} alt="Signature" className="signature-image" />
+                  <p className="signature-name">{sig.name || "[Name]"}</p>
+                  <p className="signature-date">{sig.date || "[Date]"}</p>
+                </div>
+              </DraggableElement>
+            ))}
           </div>
         </div>
 
@@ -126,9 +90,6 @@ const Certificate = () => {
         <div className="barcode-container">
           <BarcodeGenerator data={barcodeData} />
         </div>
-
-
-        
       </div>
     </div>
   );
