@@ -1,0 +1,112 @@
+.certificate-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #f5f7fa;
+  overflow: auto;
+  height: calc(100vh - 40px);
+}
+
+.certificate-template {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.certificate-content {
+  padding: 40px;
+  text-align: center;
+  height: calc(100% - 80px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Signature Styles */
+.signatures-container {
+  position: relative;
+  width: 100%;
+  min-height: 120px;
+  margin-top: 40px;
+  z-index: 20;
+}
+
+.signature-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 160px;
+}
+
+.signature-image {
+  max-height: 80px;
+  max-width: 150px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  background-color: white;
+  padding: 4px;
+  border: 1px solid #eee;
+}
+
+.signature-placeholder {
+  height: 60px;
+  width: 150px;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.signature-name {
+  font-weight: 600;
+  margin-top: 5px;
+  word-break: break-word;
+}
+
+.signature-date {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Draggable Elements */
+.draggable-element {
+  position: absolute;
+  user-select: none;
+  cursor: move;
+  z-index: 30;
+}
+
+/* Rest of your existing CSS... */
+.certificate-title {
+  font-size: 36px;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* ... (keep all other existing styles) ... */
+
+@media (max-width: 600px) {
+  .signatures-container {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .signature-box {
+    margin: 10px 0;
+  }
+}
