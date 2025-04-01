@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import { CertificateContext } from '../../contexts/CertificateContext';
 import SignatureManager from './SignatureManager';
 import LogoManager from './LogoManager';
 import CertificateTemplates from './CertificateTemplates';
 import { ChromePicker } from 'react-color';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import './Certificate.css';
-
 
 const CertificateControls = () => {
   const { certificate, updateCertificate } = useContext(CertificateContext);
@@ -14,6 +14,10 @@ const CertificateControls = () => {
   const [showBorderPicker, setShowBorderPicker] = useState(false);
   const [borderWidth, setBorderWidth] = useState(certificate.borderWidth || '15px');
   const [borderStyle, setBorderStyle] = useState(certificate.borderStyle || 'solid');
+  
+  const tabsRef = useRef(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -36,39 +40,95 @@ const CertificateControls = () => {
     updateCertificate({ borderStyle: value });
   };
 
+  const handleScroll = () => {
+    if (tabsRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = tabsRef.current;
+      setShowLeftArrow(scrollLeft > 0);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth);
+    }
+  };
+
+  const scrollTabs = (direction) => {
+    if (tabsRef.current) {
+      const scrollAmount = direction === 'left' ? -200 : 200;
+      tabsRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  // Check scroll position on mount and resize
+  useEffect(() => {
+    const checkScroll = () => {
+      if (tabsRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = tabsRef.current;
+        setShowLeftArrow(scrollLeft > 0);
+        setShowRightArrow(scrollLeft < scrollWidth - clientWidth);
+      }
+    };
+
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, []);
+
   return (
     <div className="certificate-controls">
-      <div className="control-tabs">
-        <button 
-          className={activeTab === 'details' ? 'active' : ''} 
-          onClick={() => setActiveTab('details')}
+      <div className="tabs-container">
+        {showLeftArrow && (
+          <button 
+            className="scroll-button left"
+            onClick={() => scrollTabs('left')}
+            aria-label="Scroll tabs left"
+          >
+            <FaChevronLeft />
+          </button>
+        )}
+        
+        <div 
+          className="control-tabs"
+          ref={tabsRef}
+          onScroll={handleScroll}
         >
-          Details
-        </button>
-        <button 
-          className={activeTab === 'design' ? 'active' : ''} 
-          onClick={() => setActiveTab('design')}
-        >
-          Design
-        </button>
-        <button 
-          className={activeTab === 'signatures' ? 'active' : ''} 
-          onClick={() => setActiveTab('signatures')}
-        >
-          Signatures
-        </button>
-        <button 
-          className={activeTab === 'logos' ? 'active' : ''} 
-          onClick={() => setActiveTab('logos')}
-        >
-          Logos
-        </button>
-        <button 
-          className={activeTab === 'templates' ? 'active' : ''} 
-          onClick={() => setActiveTab('templates')}
-        >
-          Templates
-        </button>
+          <button 
+            className={activeTab === 'details' ? 'active' : ''} 
+            onClick={() => setActiveTab('details')}
+          >
+            Details
+          </button>
+          <button 
+            className={activeTab === 'design' ? 'active' : ''} 
+            onClick={() => setActiveTab('design')}
+          >
+            Design
+          </button>
+          <button 
+            className={activeTab === 'signatures' ? 'active' : ''} 
+            onClick={() => setActiveTab('signatures')}
+          >
+            Signatures
+          </button>
+          <button 
+            className={activeTab === 'logos' ? 'active' : ''} 
+            onClick={() => setActiveTab('logos')}
+          >
+            Logos
+          </button>
+          <button 
+            className={activeTab === 'templates' ? 'active' : ''} 
+            onClick={() => setActiveTab('templates')}
+          >
+            Templates
+          </button>
+        </div>
+
+        {showRightArrow && (
+          <button 
+            className="scroll-button right"
+            onClick={() => scrollTabs('right')}
+            aria-label="Scroll tabs right"
+          >
+            <FaChevronRight />
+          </button>
+        )}
       </div>
 
       <div className="control-content">

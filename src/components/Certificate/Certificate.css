@@ -1,112 +1,195 @@
-.certificate-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background-color: #f5f7fa;
-  overflow: auto;
-  height: calc(100vh - 40px);
-}
-
-.certificate-template {
-  position: relative;
-  width: 800px;
-  height: 600px;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  margin: 0 auto;
-}
-
-.certificate-content {
-  padding: 40px;
-  text-align: center;
-  height: calc(100% - 80px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-}
-
-/* Signature Styles */
-.signatures-container {
-  position: relative;
+/* Certificate Controls Container */
+.certificate-controls {
   width: 100%;
-  min-height: 120px;
-  margin-top: 40px;
-  z-index: 20;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-.signature-box {
+/* Tabs Container */
+.tabs-container {
+  position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 10px;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  min-width: 160px;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 32px;
 }
 
-.signature-image {
-  max-height: 80px;
-  max-width: 150px;
-  object-fit: contain;
-  margin-bottom: 8px;
-  background-color: white;
-  padding: 4px;
-  border: 1px solid #eee;
+/* Scrollable Tabs */
+.control-tabs {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  white-space: nowrap;
+  flex: 1;
+  padding: 0 4px;
+  scroll-behavior: smooth;
 }
 
-.signature-placeholder {
-  height: 60px;
-  width: 150px;
+.control-tabs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.control-tabs button {
+  flex: 0 0 auto;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  color: #666;
+  position: relative;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.control-tabs button.active {
+  color: #3498db;
+  border-bottom-color: #3498db;
+}
+
+.control-tabs button:hover:not(.active) {
+  color: #333;
   background-color: #f5f5f5;
+}
+
+/* Scroll Buttons */
+.scroll-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
-  margin-bottom: 10px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
 }
 
-.signature-name {
-  font-weight: 600;
-  margin-top: 5px;
-  word-break: break-word;
+.scroll-button.left {
+  left: 0;
 }
 
-.signature-date {
+.scroll-button.right {
+  right: 0;
+}
+
+.scroll-button:hover {
+  background-color: #f5f5f5;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.scroll-button svg {
   font-size: 14px;
   color: #666;
 }
 
-/* Draggable Elements */
-.draggable-element {
+/* Control Content */
+.control-content {
+  padding: 20px;
+  height: calc(100% - 49px);
+  overflow-y: auto;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #444;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Color Picker Styles */
+.color-picker-group {
+  margin-bottom: 15px;
+}
+
+.color-picker-wrapper {
+  position: relative;
+}
+
+.color-picker-button {
+  width: 100%;
+  height: 36px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.color-picker-popup {
   position: absolute;
-  user-select: none;
-  cursor: move;
-  z-index: 30;
+  z-index: 10;
+  top: 40px;
+  left: 0;
+  background: white;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
-/* Rest of your existing CSS... */
-.certificate-title {
-  font-size: 36px;
-  color: #2c3e50;
-  margin-bottom: 30px;
-  font-weight: 700;
-  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+.close-picker {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-/* ... (keep all other existing styles) ... */
-
-@media (max-width: 600px) {
-  .signatures-container {
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .control-tabs button {
+    padding: 12px 16px;
   }
   
-  .signature-box {
-    margin: 10px 0;
+  .tabs-container {
+    padding: 0 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .control-tabs button {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  
+  .scroll-button {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .tabs-container {
+    padding: 0 24px;
   }
 }
