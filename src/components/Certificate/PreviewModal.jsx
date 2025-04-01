@@ -3,11 +3,18 @@ import { toPng, toJpeg } from 'html-to-image';
 import { saveAs } from 'file-saver';
 import { jsPDF } from 'jspdf';
 import Certificate from './Certificate';
-import { FaTimes, FaDownload, FaFilePdf } from 'react-icons/fa';
+import { FaTimes, FaDownload, FaFilePdf, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import './PreviewModal.css';
 
-const PreviewModal = ({ onClose }) => {
+const PreviewModal = ({ 
+  onClose, 
+  onNavigate, 
+  currentIndex = 0, 
+  totalCertificates = 1,
+  onDownloadAll 
+}) => {
   const certificateRef = useRef(null);
+  const isBulkMode = totalCertificates > 1;
 
   const downloadCertificate = async (format) => {
     if (!certificateRef.current) return;
@@ -16,7 +23,7 @@ const PreviewModal = ({ onClose }) => {
       let dataUrl;
       const options = {
         quality: 0.95,
-        pixelRatio: 3, // Higher quality
+        pixelRatio: 3,
         backgroundColor: '#ffffff'
       };
 
@@ -52,11 +59,35 @@ const PreviewModal = ({ onClose }) => {
     <div className="preview-modal">
       <div className="preview-content">
         <div className="preview-header">
-          <h2>Certificate Preview</h2>
+          <h2>
+            {isBulkMode ? `Certificate Preview (${currentIndex + 1} of ${totalCertificates})` : 'Certificate Preview'}
+          </h2>
           <button className="close-button" onClick={onClose}>
             <FaTimes />
           </button>
         </div>
+        
+        {isBulkMode && (
+          <div className="bulk-navigation">
+            <button 
+              className="nav-button"
+              onClick={() => onNavigate('prev')}
+              disabled={currentIndex === 0}
+            >
+              <FaChevronLeft /> Previous
+            </button>
+            <span className="nav-status">
+              {currentIndex + 1} / {totalCertificates}
+            </span>
+            <button 
+              className="nav-button"
+              onClick={() => onNavigate('next')}
+              disabled={currentIndex === totalCertificates - 1}
+            >
+              Next <FaChevronRight />
+            </button>
+          </div>
+        )}
         
         <div className="certificate-container">
           <div className="certificate-preview" ref={certificateRef}>
@@ -83,6 +114,15 @@ const PreviewModal = ({ onClose }) => {
           >
             <FaFilePdf /> Download PDF
           </button>
+          
+          {isBulkMode && (
+            <button 
+              className="download-button primary"
+              onClick={onDownloadAll}
+            >
+              <FaDownload /> Download All as PDF
+            </button>
+          )}
         </div>
       </div>
     </div>

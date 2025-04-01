@@ -1,25 +1,18 @@
-
-
-
-// components/Certificate/BulkCertificateControls.js
 import React, { useState, useContext, useEffect } from 'react';
 import { CertificateContext } from '../../contexts/CertificateContext';
 import * as XLSX from 'xlsx';
+import PreviewModal from '../Certificate/PreviewModal';
 import './BulkCertificateControls.css';
 
-// Simulated API response data
 const dummyRecipients = [
-    { id: 1, fullName: "John Doe", email: "john@example.com", course: "Advanced React" },
-    { id: 2, fullName: "Jane Smith", email: "jane@example.com", course: "Node.js Fundamentals" },
-    { id: 3, fullName: "Alex Johnson", email: "alex@example.com", course: "UI/UX Design" },
-    { id: 1, fullName: "Alex Ekwueme", email: "john@example.com", course: "Advanced React" },
-    { id: 2, fullName: "Jane Smith", email: "jane@example.com", course: "Node.js Fundamentals" },
-    { id: 3, fullName: "Imanuel Davidson", email: "alex@example.com", course: "Backend  Programmer" },
-    { id: 4, fullName: "Sarah Williams", email: "sarah@example.com", course: "Data Science" },
-    { id: 5, fullName: "Michael Brown", email: "michael@example.com", course: "DevOps Engineering" },
-    { id: 6, fullName: "Emily Davis", email: "emily@example.com", course: "Cloud Computing" },
-  ];
-  
+  { id: 1, fullName: "John Doe", email: "john@example.com", course: "Advanced React" },
+  { id: 2, fullName: "Jane Smith", email: "jane@example.com", course: "Node.js Fundamentals" },
+  { id: 3, fullName: "Alex Johnson", email: "alex@example.com", course: "UI/UX Design" },
+  { id: 4, fullName: "Alex Ekwueme", email: "john@example.com", course: "Advanced React" },
+  { id: 5, fullName: "Sarah Williams", email: "sarah@example.com", course: "Data Science" },
+  { id: 6, fullName: "Michael Brown", email: "michael@example.com", course: "DevOps Engineering" },
+  { id: 7, fullName: "Emily Davis", email: "emily@example.com", course: "Cloud Computing" },
+];
 
 const BulkCertificateControls = () => {
   const { certificate, updateCertificate } = useContext(CertificateContext);
@@ -27,18 +20,19 @@ const BulkCertificateControls = () => {
   const [selectedRecipients, setSelectedRecipients] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [templateData, setTemplateData] = useState({});
-  const [dataSource, setDataSource] = useState('api'); // 'api' or 'excel'
+  const [dataSource, setDataSource] = useState('api');
   const [columns, setColumns] = useState([]);
   const [nameColumn, setNameColumn] = useState('fullName');
   const [courseColumn, setCourseColumn] = useState('course');
+  const [generatedCertificates, setGeneratedCertificates] = useState([]);
+  const [showPreview, setShowPreview] = useState(false);
+  const [currentPreviewIndex, setCurrentPreviewIndex] = useState(0);
 
-  // Simulate API fetch
   useEffect(() => {
     if (dataSource === 'api') {
       const fetchRecipients = async () => {
         setIsLoading(true);
         try {
-          // Simulate API call delay
           await new Promise(resolve => setTimeout(resolve, 1000));
           setRecipients(dummyRecipients);
           setColumns(['id', 'fullName', 'email', 'course']);
@@ -48,7 +42,6 @@ const BulkCertificateControls = () => {
           setIsLoading(false);
         }
       };
-
       fetchRecipients();
     }
   }, [dataSource]);
@@ -70,7 +63,6 @@ const BulkCertificateControls = () => {
         if (jsonData.length > 0) {
           setRecipients(jsonData);
           setColumns(Object.keys(jsonData[0]));
-          // Try to auto-detect common column names
           const firstRow = jsonData[0];
           const autoNameCol = Object.keys(firstRow).find(k => 
             k.match(/name|fullname|student/i)
@@ -101,7 +93,6 @@ const BulkCertificateControls = () => {
   };
 
   const saveTemplateData = () => {
-    // Save all current certificate settings except recipientName
     const { recipientName, ...currentTemplate } = certificate;
     setTemplateData(currentTemplate);
     alert('Template settings saved! These will be applied to all generated certificates.');
@@ -125,10 +116,9 @@ const BulkCertificateControls = () => {
     
     setIsLoading(true);
     try {
-      // Simulate processing delay
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const generatedCertificates = selectedRecipients.map(id => {
+      const certs = selectedRecipients.map(id => {
         const recipient = recipients.find(r => 
           dataSource === 'api' ? r.id === id : r === id
         );
@@ -139,16 +129,51 @@ const BulkCertificateControls = () => {
         };
       });
 
-      console.log("Generated certificates:", generatedCertificates);
-      alert(`Successfully processed ${generatedCertificates.length} certificates!`);
+      setGeneratedCertificates(certs);
+      alert(`Successfully processed ${certs.length} certificates!`);
       
-      // Preview the first certificate
-      if (generatedCertificates.length > 0) {
-        updateCertificate(generatedCertificates[0]);
+      if (certs.length > 0) {
+        updateCertificate(certs[0]);
+        setCurrentPreviewIndex(0);
+        setShowPreview(true);
       }
     } catch (error) {
       console.error("Error generating certificates:", error);
       alert("Failed to generate certificates. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const navigatePreview = (direction) => {
+    let newIndex = currentPreviewIndex;
+    if (direction === 'prev' && currentPreviewIndex > 0) {
+      newIndex = currentPreviewIndex - 1;
+    } else if (direction === 'next' && currentPreviewIndex < generatedCertificates.length - 1) {
+      newIndex = currentPreviewIndex + 1;
+    }
+    
+    if (newIndex !== currentPreviewIndex) {
+      setCurrentPreviewIndex(newIndex);
+      updateCertificate(generatedCertificates[newIndex]);
+    }
+  };
+
+  const downloadAllCertificates = async (format) => {
+    if (generatedCertificates.length === 0) return;
+    
+    setIsLoading(true);
+    try {
+      for (let i = 0; i < generatedCertificates.length; i++) {
+        const cert = generatedCertificates[i];
+        updateCertificate(cert);
+        await new Promise(resolve => setTimeout(resolve, 100));
+        console.log(`Would download certificate for ${cert.recipientName} as ${format}`);
+      }
+      alert(`Download process completed for ${generatedCertificates.length} certificates!`);
+    } catch (error) {
+      console.error("Error downloading certificates:", error);
+      alert("Failed to download certificates. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -295,7 +320,39 @@ const BulkCertificateControls = () => {
         >
           {isLoading ? 'Generating...' : `Generate All (${selectedRecipients.length})`}
         </button>
+        
+        {generatedCertificates.length > 0 && (
+          <>
+            <button 
+              onClick={() => {
+                setCurrentPreviewIndex(0);
+                updateCertificate(generatedCertificates[0]);
+                setShowPreview(true);
+              }}
+              className="secondary"
+            >
+              Preview All Certificates
+            </button>
+            <button 
+              onClick={() => downloadAllCertificates('pdf')}
+              className="primary"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Processing...' : `Download All (${generatedCertificates.length})`}
+            </button>
+          </>
+        )}
       </div>
+
+      {showPreview && generatedCertificates.length > 0 && (
+        <PreviewModal 
+          onClose={() => setShowPreview(false)}
+          onNavigate={navigatePreview}
+          currentIndex={currentPreviewIndex}
+          totalCertificates={generatedCertificates.length}
+          onDownloadAll={() => downloadAllCertificates('pdf')}
+        />
+      )}
     </div>
   );
 };
