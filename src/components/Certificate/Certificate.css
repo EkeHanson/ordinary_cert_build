@@ -315,3 +315,97 @@
   position: absolute;
   z-index: 1;
 }
+.certificate-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.certificate-template {
+  position: relative;
+  margin: 0 auto;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.certificate-content {
+  position: relative;
+  z-index: 1;
+  padding: 60px;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.certificate-title {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.recipient-name {
+  font-size: 2rem;
+  margin: 20px 0;
+  color: #2c3e50;
+}
+
+.course-name {
+  font-size: 1.8rem;
+  margin: 20px 0;
+  color: #3498db;
+}
+
+.certificate-text {
+  font-size: 1.2rem;
+  margin: 10px 0;
+  color: #555;
+}
+
+.signatures-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.signature-box {
+  margin: 0 10px;
+  text-align: center;
+  padding: 5px;
+}
+
+.signature-image {
+  max-width: 120px;
+  height: auto;
+  margin-bottom: 5px;
+}
+
+.signature-name {
+  font-weight: bold;
+  margin: 5px 0;
+  font-size: 0.8rem;
+  color: #333;
+  line-height: 1.2;
+}
+
+.signature-date {
+  margin: 0;
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 1.2;
+}
+
+.barcode-container {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.certificate-logo {
+  max-width: 100px;
+  height: auto;
+  object-fit: contain;
+}

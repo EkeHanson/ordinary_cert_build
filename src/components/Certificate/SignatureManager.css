@@ -400,3 +400,28 @@
 .icon-draw::before { content: '✎'; }
 .icon-empty::before { content: '✖'; }
 .icon-delete::before { content: '🗑'; }
+
+/* Add these to your existing SignatureManager.css */
+.preview-name {
+  font-size: 0.8rem;
+  margin: 3px 0;
+}
+
+.preview-date {
+  font-size: 0.7rem;
+  margin: 3px 0;
+}
+
+.signature-card {
+  padding: 10px;
+}
+
+.signature-info h4 {
+  font-size: 0.9rem;
+  margin: 3px 0;
+}
+
+.signature-date {
+  font-size: 0.7rem;
+  margin: 3px 0;
+}

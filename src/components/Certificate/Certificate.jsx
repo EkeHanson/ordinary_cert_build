@@ -17,7 +17,7 @@ const Certificate = () => {
     title, 
     recipientName, 
     courseName, 
-    completionText, // Add this new field
+    completionText,
     date, 
     signatures, 
     logos, 
@@ -86,11 +86,9 @@ const Certificate = () => {
           <h1 className="certificate-title">{title}</h1>
           <p className="certificate-text">This is to certify that</p>
           <h2 className="recipient-name">{recipientName || "[Recipient Name]"}</h2>
-       
           <p className="certificate-text">
             {certificate.completionText || "has successfully completed the course"}
           </p>
-                    
           <h3 className="course-name">{courseName || "[Course Name]"}</h3>
           <p className="certificate-text">on this {date}</p>
           
@@ -107,7 +105,7 @@ const Certificate = () => {
                     src={sig.image} 
                     alt="Signature" 
                     className="signature-image" 
-                    style={{ width: '150px', height: 'auto' }}
+                    style={{ width: '120px', height: 'auto' }}
                   />
                   <p className="signature-name">{sig.name || "[Name]"}</p>
                   <p className="signature-date">{sig.date || "[Date]"}</p>
