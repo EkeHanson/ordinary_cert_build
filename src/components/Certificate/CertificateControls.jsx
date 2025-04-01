@@ -163,6 +163,18 @@ const CertificateControls = () => {
                 placeholder="Enter course name"
               />
             </div>
+
+            <div className="form-group">
+              <label>Completion Text</label>
+              <input
+                type="text"
+                name="completionText"
+                value={certificate.completionText}
+                onChange={(e) => updateCertificate({ completionText: e.target.value })}
+                placeholder="Completion text (e.g., 'has successfully completed the course')"
+              />
+            </div>
+
             <div className="form-group">
               <label>Date</label>
               <input

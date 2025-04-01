@@ -53,36 +53,6 @@ const SignatureManager = () => {
       }
     }
   };
-  
-  // In the return statement, update the preview section:
-  {newSignature.image && (
-    <div className="preview-section">
-      <h4>Signature Preview</h4>
-      <div className="signature-preview">
-        <div className="signature-preview-box">
-          <img 
-            src={newSignature.image} 
-            alt="Signature Preview" 
-            onError={(e) => {
-              e.target.src = '';
-              e.target.style.display = 'none';
-            }}
-          />
-        </div>
-        <div className="signature-details">
-          <p><strong>Name:</strong> {newSignature.name || 'Not specified'}</p>
-          <p><strong>Date:</strong> {newSignature.date}</p>
-        </div>
-      </div>
-      <button 
-        className="add-signature-btn"
-        onClick={handleAddSignature}
-        disabled={!newSignature.name || !newSignature.image}
-      >
-        Add Signature to Document
-      </button>
-    </div>
-  )}
 
   const openDrawingPanel = () => {
     setIsDrawing(true);
@@ -252,7 +222,16 @@ const SignatureManager = () => {
             <div className="preview-section">
               <h4>Signature Preview</h4>
               <div className="signature-preview">
-                <img src={newSignature.image} alt="Signature Preview" />
+                <div className="signature-preview-box">
+                  <img 
+                    src={newSignature.image} 
+                    alt="Signature Preview" 
+                    onError={(e) => {
+                      e.target.src = '';
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
                 <div className="signature-details">
                   <p><strong>Name:</strong> {newSignature.name || 'Not specified'}</p>
                   <p><strong>Date:</strong> {newSignature.date}</p>

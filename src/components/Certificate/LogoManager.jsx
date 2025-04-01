@@ -1,5 +1,6 @@
 import React, { useContext, useState, useRef } from 'react';
 import  {CertificateContext}  from '../../contexts/CertificateContext';
+import './Certificate.css';
 
 const LogoManager = () => {
   const { certificate, addLogo, removeLogo } = useContext(CertificateContext);

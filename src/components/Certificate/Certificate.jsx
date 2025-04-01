@@ -1,5 +1,4 @@
-// Certificate.js
-import React, { useContext } from 'react';
+import React, { useContext, useRef, useEffect } from 'react';
 import { CertificateContext } from '../../contexts/CertificateContext';
 import DraggableElement from '../UI/DraggableElement';
 import BarcodeGenerator from './BarcodeGenerator';
@@ -12,17 +11,22 @@ import elegantTemplate from '../../assets/templates/elegant.png';
 import minimalTemplate from '../../assets/templates/minimal.jpg';
 
 const Certificate = () => {
-  const { certificate } = useContext(CertificateContext);
+  const { certificate, updateCompletionTextPosition } = useContext(CertificateContext);
+  const certificateRef = useRef(null);
   const { 
     title, 
     recipientName, 
     courseName, 
+    completionText, // Add this new field
     date, 
     signatures, 
     logos, 
     barcodeData,
     template = 'classic', 
-    templateImage
+    templateImage,
+    borderColor = '#f1c40f',
+    borderWidth = '15px',
+    borderStyle = 'solid'
   } = certificate;
 
   // Map template IDs to their image files
@@ -40,25 +44,71 @@ const Certificate = () => {
     backgroundImage: `url(${backgroundImage})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
+    backgroundRepeat: 'no-repeat',
+    borderColor,
+    borderWidth,
+    borderStyle
+  };
+
+  // Fixed dimensions for consistent rendering
+  const [dimensions, setDimensions] = React.useState({ width: 1000, height: 707 });
+
+  useEffect(() => {
+    const calculateDimensions = () => {
+      if (certificateRef.current) {
+        const width = certificateRef.current.offsetWidth;
+        const height = width * 0.707; // Standard A4 ratio
+        setDimensions({ width, height });
+      }
+    };
+
+    calculateDimensions();
+    window.addEventListener('resize', calculateDimensions);
+    return () => window.removeEventListener('resize', calculateDimensions);
+  }, []);
+
+  const handleCompletionTextDrag = (e, data) => {
+    updateCompletionTextPosition({ x: data.x, y: data.y });
   };
 
   return (
-    <div className="certificate-wrapper">
-      <div className="certificate-template" style={certificateStyle}>
+    <div className="certificate-wrapper" ref={certificateRef}>
+      <div 
+        className="certificate-template" 
+        style={{
+          ...certificateStyle,
+          width: `${dimensions.width}px`,
+          height: `${dimensions.height}px`,
+          position: 'relative'
+        }}
+      >
         <div className="certificate-content">
           <h1 className="certificate-title">{title}</h1>
           <p className="certificate-text">This is to certify that</p>
           <h2 className="recipient-name">{recipientName || "[Recipient Name]"}</h2>
-          <p className="certificate-text">has successfully completed the course</p>
+       
+          <p className="certificate-text">
+            {certificate.completionText || "has successfully completed the course"}
+          </p>
+                    
           <h3 className="course-name">{courseName || "[Course Name]"}</h3>
           <p className="certificate-text">on this {date}</p>
           
           <div className="signatures-container">
             {signatures.map((sig, index) => (
-              <DraggableElement key={index} id={`signature-${index}`} defaultPosition={sig.position}>
+              <DraggableElement 
+                key={index} 
+                id={`signature-${index}`} 
+                defaultPosition={sig.position}
+                bounds="parent"
+              >
                 <div className="signature-box">
-                  <img src={sig.image} alt="Signature" className="signature-image" />
+                  <img 
+                    src={sig.image} 
+                    alt="Signature" 
+                    className="signature-image" 
+                    style={{ width: '150px', height: 'auto' }}
+                  />
                   <p className="signature-name">{sig.name || "[Name]"}</p>
                   <p className="signature-date">{sig.date || "[Date]"}</p>
                 </div>
@@ -68,23 +118,26 @@ const Certificate = () => {
         </div>
 
         {/* Logos */}
-        {logos.length > 0 && (
-          <>
-            <DraggableElement id="logo-0" defaultPosition={logos[0]?.position || { x: 50, y: 50 }}>
-              <img src={logos[0]?.image} alt="Logo 1" className="certificate-logo" />
-            </DraggableElement>
-            {logos[1] && (
-              <DraggableElement id="logo-1" defaultPosition={logos[1]?.position || { x: '80%', y: 50 }}>
-                <img src={logos[1]?.image} alt="Logo 2" className="certificate-logo" />
-              </DraggableElement>
-            )}
-            {logos[2] && (
-              <DraggableElement id="logo-2" defaultPosition={logos[2]?.position || { x: 50, y: '80%' }}>
-                <img src={logos[2]?.image} alt="Logo 3" className="certificate-logo" />
-              </DraggableElement>
-            )}
-          </>
-        )}
+        {logos.map((logo, index) => (
+          <DraggableElement 
+            key={`logo-${index}`} 
+            id={`logo-${index}`} 
+            defaultPosition={logo?.position || { x: 50, y: 50 }}
+            bounds="parent"
+          >
+            <img 
+              src={logo?.image} 
+              alt={`Logo ${index + 1}`} 
+              className="certificate-logo" 
+              style={{
+                width: '100px',
+                height: 'auto',
+                position: 'absolute',
+                zIndex: 10
+              }}
+            />
+          </DraggableElement>
+        ))}
 
         {/* Barcode */}
         <div className="barcode-container">

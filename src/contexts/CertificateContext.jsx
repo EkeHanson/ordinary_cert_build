@@ -16,7 +16,8 @@ export const CertificateProvider = ({ children }) => {
     backgroundColor: 'transparent',
     borderColor: '#f1c40f',
     borderWidth: '15px',
-    borderStyle: 'solid'
+    borderStyle: 'solid',
+    completionText: 'has successfully completed the course',
   }]);
   
   const [historyIndex, setHistoryIndex] = useState(0);
@@ -85,6 +86,12 @@ export const CertificateProvider = ({ children }) => {
     }, true);
   }, [certificate.logos, updateCertificate]);
 
+  const updateCompletionTextPosition = useCallback((position) => {
+    updateCertificate({
+      completionTextPosition: position
+    });
+  }, [updateCertificate]);
+
   return (
     <CertificateContext.Provider value={{
       certificate,
@@ -98,7 +105,8 @@ export const CertificateProvider = ({ children }) => {
       removeSignature,
       addLogo,
       updateLogo,
-      removeLogo
+      removeLogo,
+      updateCompletionTextPosition
     }}>
       {children}
     </CertificateContext.Provider>

@@ -193,3 +193,125 @@
     padding: 0 24px;
   }
 }
+.certificate-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.certificate-template {
+  position: relative;
+  margin: 0 auto;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.certificate-content {
+  position: relative;
+  z-index: 1;
+  padding: 60px;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.certificate-title {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.recipient-name {
+  font-size: 2rem;
+  margin: 20px 0;
+  color: #2c3e50;
+}
+
+.course-name {
+  font-size: 1.8rem;
+  margin: 20px 0;
+  color: #3498db;
+}
+
+.certificate-text {
+  font-size: 1.2rem;
+  margin: 10px 0;
+  color: #555;
+}
+
+.signatures-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 60px;
+  flex-wrap: wrap;
+}
+
+.signature-box {
+  margin: 0 20px;
+  text-align: center;
+}
+
+.signature-image {
+  max-width: 150px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.signature-name {
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+.signature-date {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.barcode-container {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.certificate-logo {
+  max-width: 100px;
+  height: auto;
+  object-fit: contain;
+}
+/* Add to Certificate.css */
+.draggable-text {
+  cursor: move;
+  user-select: none;
+}
+
+.certificate-text {
+  font-size: 1.2rem;
+  margin: 10px 0;
+  color: #555;
+  position: relative; /* Needed for proper dragging */
+}
+/* Add these to your existing Certificate.css */
+.draggable-text {
+  cursor: move;
+  user-select: none;
+  margin: 10px 0;
+  padding: 5px 10px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.certificate-text {
+  font-size: 1.2rem;
+  color: #555;
+  position: relative;
+}
+
+/* Ensure the draggable elements don't affect layout */
+.react-draggable {
+  position: absolute;
+  z-index: 1;
+}
